@@ -1,5 +1,5 @@
 const {JobModel}=require("../Models/JobsModel")
-const {}=require("../Models/viewalljobsRmodel")
+const mongoose = require("mongoose");
 async function createapi(req, res) {
   try {
     const { Company_Name, Job_role, Job_description, Location, createdBy } = req.body;
@@ -45,7 +45,51 @@ async function viewallJobs (req,res){
     });
   }
 }
-function ViewJobById(req,res){
-    res.send("View by Id")
-}
-module.exports={createapi,viewallJobs,ViewJobById}
+// ------------------------------------ViewJobById
+const ViewJobById = async (req, res) => {
+  try {
+    const recruiterId = req.user.id; // recruiter id from token
+
+    const jobs = await JobModel.find({
+      createdBy: new mongoose.Types.ObjectId(recruiterId)
+    });
+
+    if (!jobs || jobs.length === 0) {
+      return res.status(404).json({ message: "You have not posted any jobs yet" });
+    }
+
+    res.status(200).json(jobs);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+// -------------------------GetApplicationsForMyJobs
+const GetApplicationsForMyJobs = async (req, res) => {
+  try {
+    const recruiterId = req.user.id; // recruiter id from token
+
+    // Step 1: Find jobs created by this recruiter
+    const jobs = await JobModel.find({ createdBy: recruiterId }).select("_id Job_role Company_Name");
+
+    if (!jobs || jobs.length === 0) {
+      return res.status(404).json({ message: "You haven't posted any jobs yet" });
+    }
+
+    const jobIds = jobs.map(job => job._id);
+
+    // Step 2: Find applications for these jobs
+    const applications = await Application.find({ jobId: { $in: jobIds } })
+      .populate("jobId", "Job_role Company_Name Location") // show job info
+      .populate("userId", "name email skills"); // show jobseeker info (from Users model)
+
+    if (!applications || applications.length === 0) {
+      return res.status(404).json({ message: "No applications for your jobs yet" });
+    }
+
+    res.status(200).json(applications);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+module.exports={createapi,viewallJobs,ViewJobById,GetApplicationsForMyJobs}

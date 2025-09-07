@@ -10,7 +10,7 @@ const {
 } = require("../Controllers/RecuriterController.js");
 
 Recruiterrouter.post("/create",TokenValidators,validateMiddleware,authoriazation,checkRole("Recruiter"),createapi);
-Recruiterrouter.get("/viewjobs", authoriazation,checkRole("Recruiter"),viewallJobs);
-Recruiterrouter.get("/viewjobs/:id",authoriazation ,checkRole("Recruiter"),ViewJobById);
+Recruiterrouter.get("/viewjobs",TokenValidators,validateMiddleware, authoriazation,checkRole("Recruiter"),viewallJobs);
+// Recruiterrouter.get("/viewjobs/:id",authoriazation ,checkRole("Recruiter"),ViewJobById);
 Recruiterrouter.get("/my-jobs/applications",authoriazation,checkRole("Recruiter"),GetApplicationsForMyJobs);
 module.exports = { Recruiterrouter };

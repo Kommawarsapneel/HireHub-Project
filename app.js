@@ -6,7 +6,9 @@ const connectDatabase=require("./config/database.js")
 const {Recruiterrouter}=require("./Routes/RecuriterRoutes.js")
 const {JobseekerRouter}=require("./Routes/JobseekerRouter.js")
 connectDatabase();
-
+app.use(cors({
+    origin:["http://localhost:5173"]
+}))
 const {Router}=require("./Routes/authRoutes.js")
 app.use(express.json());
 app.use(express.urlencoded(true));

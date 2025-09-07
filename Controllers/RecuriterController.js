@@ -78,18 +78,23 @@ const GetApplicationsForMyJobs = async (req, res) => {
 
     const jobIds = jobs.map(job => job._id);
 
-    // Step 2: Find applications for these jobs
+    // Step 2: Find applications for these jobs and populate related data
     const applications = await Application.find({ jobId: { $in: jobIds } })
-      .populate("jobId", "Job_role Company_Name Location") // show job info
-      .populate("userId", "name email skills"); // show jobseeker info (from Users model)
+      .populate("jobId", "Job_role Company_Name Location") // populate job details
+      .populate("userId", "name email skills"); // populate jobseeker details
 
     if (!applications || applications.length === 0) {
       return res.status(404).json({ message: "No applications for your jobs yet" });
     }
 
-    res.status(200).json(applications);
+    res.status(200).json({
+      message: "Applications fetched successfully",
+      applications
+    });
+
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
 module.exports={createapi,viewallJobs,ViewJobById,GetApplicationsForMyJobs}

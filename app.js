@@ -5,6 +5,7 @@ dotenv.config();
 const connectDatabase=require("./config/database.js")
 const {Recruiterrouter}=require("./Routes/RecuriterRoutes.js")
 const {JobseekerRouter}=require("./Routes/JobseekerRouter.js")
+const cors=require("cors")
 connectDatabase();
 app.use(cors({
     origin:["http://localhost:5173"]

@@ -35,6 +35,7 @@ const checkRole = (...roles) => {
     const user = req.user;
     //cross check
     const data = await UserModel.findById(user.id).select("role"); 
+    console.log(data)
     //conosle.log(data) --> we can get the data matched
     // console.log(roles.includes(data.role))
     if (roles.includes(data.role)) {

@@ -1,9 +1,10 @@
 const {JobModel}=require("../Models/JobsModel")
 const mongoose = require("mongoose");
+const Application =require("../Models/Applictionsmodel")
 async function createapi(req, res) {
   try {
-    const { Company_Name, Job_role, Job_description, Location, createdBy } = req.body;
-
+    const { Company_Name, Job_role, Job_description, Location } = req.body;
+  console.log("user id",req.user.id)
     // Check required fields
     if (!Company_Name || !Job_role || !Job_description || !Location) {
       return res.status(400).json({ error: "All required fields must be provided" });
@@ -14,13 +15,15 @@ async function createapi(req, res) {
       Job_role,
       Job_description,
       Location,
-      createdBy, // optional, only if you're passing logged-in user ID
+      createdBy:req.user.id, // optional, only if you're passing logged-in user ID
     });
 
     await data.save();
     res.status(201).json({ message: "Job created successfully", data });
   } catch (error) {
+    console.log(error)
     res.status(500).json({ error: error.message });
+    
   }
 }
 async function viewallJobs (req,res){
@@ -68,10 +71,10 @@ const ViewJobById = async (req, res) => {
 const GetApplicationsForMyJobs = async (req, res) => {
   try {
     const recruiterId = req.user.id; // recruiter id from token
-         console.log(recruiterId)
+         console.log("userid",recruiterId)
     // Step 1: Find jobs created by this recruiter
     const jobs = await JobModel.find({ createdBy: recruiterId }).select("_id Job_role Company_Name");
-
+  console.log(jobs)
     if (!jobs || jobs.length === 0) {
       return res.status(404).json({ message: "You haven't posted any jobs yet" });
     }
@@ -89,6 +92,7 @@ const GetApplicationsForMyJobs = async (req, res) => {
 
     res.status(200).json(applications);
   } catch (error) {
+    console.log(error)
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };

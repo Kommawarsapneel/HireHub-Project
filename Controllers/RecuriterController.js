@@ -68,7 +68,7 @@ const ViewJobById = async (req, res) => {
 const GetApplicationsForMyJobs = async (req, res) => {
   try {
     const recruiterId = req.user.id; // recruiter id from token
-
+         console.log(recruiterId)
     // Step 1: Find jobs created by this recruiter
     const jobs = await JobModel.find({ createdBy: recruiterId }).select("_id Job_role Company_Name");
 

@@ -8,7 +8,10 @@ const {JobseekerRouter}=require("./Routes/JobseekerRouter.js")
 const cors=require("cors")
 connectDatabase();
 app.use(cors({
-    origin:["http://localhost:5173"]
+    origin: [
+        "http://localhost:5173",
+        "https://hirehub-project-1.vercel.app"   // ✅ Added deployed frontend URL
+    ]
 }))
 const {Router}=require("./Routes/authRoutes.js")
 app.use(express.json());

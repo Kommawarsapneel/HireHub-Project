@@ -10,7 +10,7 @@ connectDatabase();
 app.use(cors({
     origin: [
         "http://localhost:5173",
-        "https://hirehub-project-1.vercel.app"   // ✅ Added deployed frontend URL
+        "hire-hub-project-fronted-5sm8.vercel.app"   // ✅ Added deployed frontend URL
     ]
 }))
 const {Router}=require("./Routes/authRoutes.js")
